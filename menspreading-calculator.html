@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menspreading Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+.container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin: 1rem 0 0.5rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.radio-group .option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.radio-group .option label {
+  font-weight: normal;
+}
+
+input[type="range"],
+input[type="number"] {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.result {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.result img {
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Menspreading Calculator</h1>
+
+<label for="height">Your Height (cm):</label>
+<input type="number" id="height" min="140" max="220" value="175" />
+
+<label>How entitled are you feeling today?</label>
+<div class="radio-group">
+  <div class="option">
+    <input type="radio" name="entitlement" id="commute" value="0" checked />
+    <label for="commute">Just here to commute</label>
+  </div>
+  <div class="option">
+    <input type="radio" name="entitlement" id="train" value="15" />
+    <label for="train">I own this train</label>
+  </div>
+  <div class="option">
+    <input type="radio" name="entitlement" id="mainchar" value="10" />
+    <label for="mainchar">I am The Main Character</label>
+  </div>
+</div>
+
+<label>Carrying anything that justifies spreading?</label>
+<div class="radio-group">
+  <div class="option">
+    <input type="radio" name="baggage" id="gymbag" value="0" checked />
+    <label for="gymbag">A gym bag/suitcase</label>
+  </div>
+  <div class="option">
+    <input type="radio" name="baggage" id="ego" value="10" />
+    <label for="ego">A fragile ego</label>
+  </div>
+  <div class="option">
+    <input type="radio" name="baggage" id="privilege" value="15" />
+    <label for="privilege">Generational privilege</label>
+  </div>
+</div>
+
+<label for="respect">How much do you respect others' personal space?</label>
+<input type="range" id="respect" min="0" max="100" value="50" />
+
+<button onclick="calculateSpread()">Calculate Your Spread</button>
+
+<div class="result" id="result" style="display: none;">
+  <p id="output"></p>
+  <img src="https://i.imgur.com/bNjEi7s.png" alt="Menspreading Graphic" />
+</div>
+
+  </div>
+
+  <script>
+    function calculateSpread() {
+      const height = parseInt(document.getElementById("height").value) || 170;
+      const respect = parseInt(document.getElementById("respect").value);
+
+      const entitlementVal = parseInt(document.querySelector('input[name="entitlement"]:checked')?.value || "0");
+
+      const baggageId = document.querySelector('input[name="baggage"]:checked')?.id || "";
+      let baggagePenalty = 0;
+      if (baggageId === "gymbag") {
+        baggagePenalty = -10;
+      } else if (baggageId === "ego") {
+        baggagePenalty = 10;
+      } else if (baggageId === "privilege") {
+        baggagePenalty = 15;
+      }
+
+      const penalty = entitlementVal + baggagePenalty + (100 - respect);
+      const penaltyFactor = penalty / 100;
+
+      const baseSpread = height / 3;
+      const spreadAngle = Math.round(Math.max(5, baseSpread * (1 - penaltyFactor)));
+
+      let sass = "";
+      if (spreadAngle < 20) sass = "You're lucky to sit at all. Knees together, soldier.";
+      else if (spreadAngle < 40) sass = "Compact and courteous. Well done.";
+      else if (spreadAngle < 65) sass = "Treading the line... choose your angles wisely.";
+      else sass = "We'll allow it. Just don’t start doing yoga on the train.";
+
+      document.getElementById("output").innerHTML =
+        `Based on your height and vibes, your <strong>maximum allowed leg spread</strong> is <strong>${spreadAngle}&deg;</strong>.<br /><br />${sass}`;
+      document.getElementById("result").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
